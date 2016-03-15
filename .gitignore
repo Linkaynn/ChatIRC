@@ -8,13 +8,7 @@
 *.war
 *.ear
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-/ChatIRC/nbproject/private/
-/ChatIRC/ChatIRC-war/nbproject/private/
-/ChatIRC/ChatIRC-ejb/nbproject/private/
-/ChatIRCLibrary/nbproject/private/
-/CapaNegocio/nbproject/private/
 /ChatIRCLibrary/build/
 /ChatIRCLibrary/dist/
 /CapaNegocio/build/

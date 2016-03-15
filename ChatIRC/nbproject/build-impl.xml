@@ -11,7 +11,7 @@ is divided into following sections:
   - dist
   - execution
   - debugging
-  - cleanup
+  - cleanu
 
 -->
 <project xmlns:ear2="http://www.netbeans.org/ns/j2ee-earproject/2" basedir=".." default="default" name="ChatIRC-impl">
