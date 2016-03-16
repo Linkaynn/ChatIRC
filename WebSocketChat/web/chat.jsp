@@ -14,26 +14,18 @@
         var $chatWindow;
         var room = '';
 
-        function onMessageReceived(evt) {
-            //var msg = eval('(' + evt.data + ')');
-            var msg = JSON.parse(evt.data); // native API
-            var $messageLine = $('<tr><td class="received">' + msg.received
-                    + '</td><td class="user label label-info">' + msg.sender
-                    + '</td><td class="message badge">' + msg.message
-                    + '</td></tr>');
-            $chatWindow.append($messageLine);
+        function onMessageReceived(evt) {            
+            $chatWindow.val($chatWindow.val() + JSON.parse(evt.data).message);
         }
-        function sendMessage() {
-            var msg = '{"message":"' + $message.val() + '", "sender":"'
-                    + $nickName.val() + '", "received":""}';
-            wsocket.send(msg);
+        function sendMessage(message) {
+            wsocket.send(message);
             $message.val('').focus();
         }
 
         function connectToChatserver() {
             //room = $('#chatroom option:selected').val();
-            room = "General";
-            wsocket = new WebSocket(serviceLocation + room);
+            alert(serviceLocation + room + "/" + $nickName);
+            wsocket = new WebSocket(serviceLocation + room + "/" + $nickName);
             wsocket.onmessage = onMessageReceived;
         }
 
@@ -44,25 +36,32 @@
             $('.chat-signin').show();
             $nickName.focus();
         }
+        
+        function buildJSON(sender, message, received){
+            return '{"message":"' + message + '", "sender":"'+ sender + '", "received":"' + received + '"}';
+        }
 
+        
         $(document).ready(function() {
-            $nickName = $('#nickname');
+            $nickName = "@<% out.print(request.getParameter("username"));  %>";
             $message = $('#message');
-            $chatWindow = $('#response');
-            $('.chat-wrapper').hide();
-            $nickName.focus();
-
-            $('#enterRoom').click(function(evt) {
-                evt.preventDefault();
-                connectToChatserver();
-                $('.chat-wrapper h2').text('Chat # '+$nickName.val() + "@" + room);
-                $('.chat-signin').hide();
-                $('.chat-wrapper').show();
-                $message.focus();
+            $chatWindow = $('#textArea');
+            room = $('#title').text().split(" ")[0].substring(1);
+            
+            connectToChatserver();
+            $message.focus();
+            
+            //sendMessage(buildJSON("#General", "Welcome, " + $nickName, ""));
+            
+            $('#message').bind("enterKey", function(evt) {
+                evt.preventDefault();                
+                sendMessage(buildJSON($nickName, $message.val(), ""));
             });
-            $('#do-chat').submit(function(evt) {
-                evt.preventDefault();
-                sendMessage();
+            
+            $('#message').keyup(function (e){
+                if (e.keyCode === 13){
+                    $(this).trigger("enterKey");
+                }
             });
 
             $('#leave-room').click(function(){
@@ -73,8 +72,8 @@
 
 </head>
 <body>
-    <div id="menu">
-        <h1>#Chat General</h1>
+    <div id="menu chat-wrapper">
+        <h1 id="title" >#General @<% out.print(request.getParameter("username"));  %> </h1>
         <ul class="nav navbar-nav">
             <li><a href="#">Listar Sala</a></li>
             <li><a href="#">Crear sala</a></li>
@@ -89,6 +88,24 @@
             </div>
         </form>
     </div>
+        <!--
+        	<div class="container-fluid container chat-wrapper" id="chatArea">
+		<form id="do-chat">
+			<h2 class="alert alert-success"></h2>
+			<table id="response" class="table table-bordered"></table>
+			<fieldset>
+				<legend>Enter your message..</legend>
+				<div class="controls">
+					<input type="text" class="input-block-level" placeholder="Your message..." id="message" style="height:60px"/>
+					<input type="submit" class="btn btn-large btn-block btn-primary"
+						value="Send message" />
+					<button class="btn btn-large btn-block" type="button" id="leave-room">Leave
+						room</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+        -->
     <div class="container-fluid" id="chatArea">
         <div>
             <textarea rows="20" id="textArea"></textarea>
@@ -97,5 +114,6 @@
         <br>
         <input type="text" class="chatInputText" id="message">
     </div>
+
 </body>
 </html>

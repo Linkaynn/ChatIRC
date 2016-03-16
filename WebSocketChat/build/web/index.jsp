@@ -16,7 +16,7 @@
     <h1>IRC Chat</h1>
     <div id="formEnter" class="col-md-4 col-xs-12">
         <form class="text-center" action="FrontController">
-            <input type="text" placeholder="Nick" id="nickGuest"onload="generateNick()">
+            <input type="text" placeholder="Nick" name="username" id="nickGuest">
             <br>
             <input type="hidden" name="command" value="Anonymous">
             <input class="btn btn-success" type="submit" value="Enter">
@@ -24,7 +24,7 @@
     </div>
     <div id="formLogin" class="col-md-4 col-xs-12">
         <form class="text-center" action="FrontController">
-            <input type="text" placeholder="Username">
+            <input type="text" placeholder="Username" name="username">
             <br>
             <input type="password" placeholder="Password">
             <br>
@@ -36,7 +36,7 @@
     </div>
     <div id="formRegister" class="col-md-4 col-xs-12">
         <form class="text-center" action="FrontController">
-            <input type="text" placeholder="Username">
+            <input type="text" placeholder="Username" name="username">
             <br>
             <input type="password" placeholder="Password">
             <br>
