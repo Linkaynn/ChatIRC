@@ -1,0 +1,40 @@
+body{
+    background-color: #EFFBEF;
+}
+
+#nickGuest{
+    margin-top:2.5%;
+}
+
+#button{
+    margin-top:10%;
+}
+
+#formEnter,#formRegister,#formLogin{
+    height: 250px;
+    background-color:#8ECFAE ;
+    border: outset 5px;
+    border-radius: 20px;
+}
+
+form{
+    padding-top:40px;
+}
+
+.btn{
+    margin-top:10px ;
+    background-color: #0C4E2C;
+
+}
+
+input{
+    margin-bottom: 2.5px;
+}
+
+h1{
+    text-align:center;
+    text-shadow: 2px 2px 4px #0C4E2C;
+    margin-bottom: 3%;
+    margin-top:3%;
+}
+

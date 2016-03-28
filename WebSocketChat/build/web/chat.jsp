@@ -5,115 +5,67 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="chatGeneral.css"/>
-    <script>
-        var wsocket;
-        var serviceLocation = "ws://localhost:8080/WebSocketChat/chat/";
-        var $nickName;
-        var $message;
-        var $chatWindow;
-        var room = '';
-
-        function onMessageReceived(evt) {            
-            $chatWindow.val($chatWindow.val() + JSON.parse(evt.data).message);
-        }
-        function sendMessage(message) {
-            wsocket.send(message);
-            $message.val('').focus();
-        }
-
-        function connectToChatserver() {
-            //room = $('#chatroom option:selected').val();
-            alert(serviceLocation + room + "/" + $nickName);
-            wsocket = new WebSocket(serviceLocation + room + "/" + $nickName);
-            wsocket.onmessage = onMessageReceived;
-        }
-
-        function leaveRoom() {
-            wsocket.close();
-            $chatWindow.empty();
-            $('.chat-wrapper').hide();
-            $('.chat-signin').show();
-            $nickName.focus();
-        }
-        
-        function buildJSON(sender, message, received){
-            return '{"message":"' + message + '", "sender":"'+ sender + '", "received":"' + received + '"}';
-        }
-
-        
-        $(document).ready(function() {
-            $nickName = "@<% out.print(request.getParameter("username"));  %>";
-            $message = $('#message');
-            $chatWindow = $('#textArea');
-            room = $('#title').text().split(" ")[0].substring(1);
-            
-            connectToChatserver();
-            $message.focus();
-            
-            //sendMessage(buildJSON("#General", "Welcome, " + $nickName, ""));
-            
-            $('#message').bind("enterKey", function(evt) {
-                evt.preventDefault();                
-                sendMessage(buildJSON($nickName, $message.val(), ""));
-            });
-            
-            $('#message').keyup(function (e){
-                if (e.keyCode === 13){
-                    $(this).trigger("enterKey");
-                }
-            });
-
-            $('#leave-room').click(function(){
-                leaveRoom();
-            });
-        });
-    </script>
+    <link rel="stylesheet" type="text/css" href="css/chatGeneral.css"/>
+    <script src="js/chat.js"></script>
 
 </head>
-<body>
-    <div id="menu chat-wrapper">
-        <h1 id="title" >#General @<% out.print(request.getParameter("username"));  %> </h1>
-        <ul class="nav navbar-nav">
-            <li><a href="#">Listar Sala</a></li>
-            <li><a href="#">Crear sala</a></li>
-            <li><a href="#">Ajustes</a></li>
-         </ul>
-        <form class="navbar-form navbar-left" role="search">
-            <div class="input-group add-on">
-                <input type="text" class="form-control" placeholder="Username" name="srch-term" id="srch-term">
-                <div class="input-group-btn">
-                    <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                </div>
+<body class="container">
+    <div id="menu chat-wrapper" class="container">
+    <h1 id="title" >#General @<% out.print(request.getParameter("username"));  %> </h1>
+    <ul>
+        <li><a href="#home">Crear sala</a></li>
+        <li><a href="#news">Listar salas</a></li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn" onclick="myFunction()">Ajustes</a>
+            <div class="dropdown-content" id="myDropdown">
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
             </div>
-        </form>
-    </div>
-        <!--
-        	<div class="container-fluid container chat-wrapper" id="chatArea">
-		<form id="do-chat">
-			<h2 class="alert alert-success"></h2>
-			<table id="response" class="table table-bordered"></table>
-			<fieldset>
-				<legend>Enter your message..</legend>
-				<div class="controls">
-					<input type="text" class="input-block-level" placeholder="Your message..." id="message" style="height:60px"/>
-					<input type="submit" class="btn btn-large btn-block btn-primary"
-						value="Send message" />
-					<button class="btn btn-large btn-block" type="button" id="leave-room">Leave
-						room</button>
-				</div>
-			</fieldset>
-		</form>
-	</div>
-        -->
-    <div class="container-fluid" id="chatArea">
-        <div>
-            <textarea rows="20" id="textArea"></textarea>
-            <textarea rows="20" cols="28"></textarea>
+        </li>
+    </ul>
+</div>
+
+
+<div class="container" id="chatArea">
+    <div>
+        <div class="col-md-9 chatContentParent">
+            <div id="chatContent">
+            </div>
+            <input autocomplete="off" type="text" class="chatInputText col-xs-12" id="message" placeholder="Write a message...">
         </div>
-        <br>
-        <input type="text" class="chatInputText" id="message">
+        <div class="col-md-3 chatContentParent">
+            <div id="userContent"></div>
+            <input autocomplete="off" type="text" class="chatInputText col-xs-12" id="message" placeholder="Search a user...">
+        </div>
     </div>
+    <br>
+</div>
+
+
+<script>
+    /* When the user clicks on the button,
+     toggle between hiding and showing the dropdown content */
+    function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(e) {
+                if (!e.target.matches('.dropbtn')) {
+
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var d = 0; d < dropdowns.length; d++) {
+                        var openDropdown = dropdowns[d];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
+                    }
+                }
+            }
+    setUsername("@<% out.print(request.getParameter("username"));  %>");
+    ready();
+</script>
 
 </body>
 </html>
