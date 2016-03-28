@@ -18,3 +18,4 @@ hs_err_pid*
 /CapaNegocio/dist/
 /ChatIRC/dist/
 /WebSocketChat/dist/
+*.dpf
