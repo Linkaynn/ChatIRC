@@ -1,0 +1,130 @@
+body{
+    background-color:#EFFBEF;
+}
+
+input, textarea, #chatContentParent{
+    box-sizing:border-box;
+    border: outset 2px;
+    border-radius: 10px;
+    border-color:#BDBDBD;
+}
+
+textarea {
+    resize: none;
+}
+
+.chatContentParent {
+    background: #ffffff;
+    padding-left: 0px;
+    padding-right: 0px;
+    height: 730px;
+    border-radius: 10px;
+}
+
+#chatContent {
+    padding-left: 12px;
+    padding-right: 12px;
+    background: #ffffff;
+    height: 690px;
+    overflow-y: scroll;
+    border-radius: 10px;
+}
+
+#userContent {
+    padding-left: 12px;
+    background: #ffffff;
+    height: 690px;
+    overflow-y: scroll;
+}
+
+#message{
+    height: 40px;
+}
+
+h1{
+    font-family: Boogaloo;
+    font-size: 50px;
+    text-shadow: 2px 2px 4px #0C4E2C;
+}
+
+.input-group {
+    box-sizing:border-box;
+    border: outset 2px;
+    border-radius: 10px;
+    border-color:#BDBDBD;
+
+}
+
+.navbar{
+    margin-right: 8%;
+}
+
+form[role=search]{
+    width:20%;
+    float:right;
+    margin-right:4.5%
+}
+
+ul {
+    border-radius: 10px;
+    margin-top: 2%;
+    list-style-type: none;
+    padding: 0;
+    overflow: hidden;
+    background-color:#52A078;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-family: Boogaloo;
+    font-size: 30px;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: #8ECFAE;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: #52A078;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background-color: #eaeaea;
+    border-left: 1px solid #ccc;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #ccc;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}

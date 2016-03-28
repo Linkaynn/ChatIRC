@@ -33,7 +33,7 @@ public abstract class Command {
     
     public void forward(String target){
         try {
-            context.getRequestDispatcher(target).forward(request, response);
+            request.getRequestDispatcher(target).forward(request, response);
         } catch (ServletException | IOException ex) {
             Logger.getLogger(Command.class.getName()).log(Level.SEVERE, null, ex);
         }

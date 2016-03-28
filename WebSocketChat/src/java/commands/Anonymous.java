@@ -18,11 +18,7 @@ public class Anonymous extends Command{
 
     @Override
     public void process() {
-        try {
-            request.getRequestDispatcher("chat.jsp").forward(request, response);
-        } catch (ServletException | IOException ex) {
-            Logger.getLogger(Anonymous.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        forward("chat.jsp");
     }
     
 }

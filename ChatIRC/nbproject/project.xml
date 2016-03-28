@@ -8,11 +8,11 @@
             <web-module-libraries/>
             <web-module-additional-libraries>
                 <library>
-                    <file>${reference.ChatIRC-war.dist-ear}</file>
+                    <file>${reference.CapaNegocio.dist-ear}</file>
                     <path-in-war>/</path-in-war>
                 </library>
                 <library>
-                    <file>${reference.CapaNegocio.dist-ear}</file>
+                    <file>${reference.WebSocketChat.dist-ear}</file>
                     <path-in-war>/</path-in-war>
                 </library>
             </web-module-additional-libraries>
@@ -27,20 +27,12 @@
                 <id>dist-ear</id>
             </reference>
             <reference>
-                <foreign-project>ChatIRC-war</foreign-project>
+                <foreign-project>WebSocketChat</foreign-project>
                 <artifact-type>j2ee_ear_archive</artifact-type>
                 <script>build.xml</script>
                 <target>dist-ear</target>
                 <clean-target>clean-ear</clean-target>
                 <id>dist-ear</id>
-            </reference>
-            <reference>
-                <foreign-project>ChatIRCLibrary</foreign-project>
-                <artifact-type>jar</artifact-type>
-                <script>build.xml</script>
-                <target>jar</target>
-                <clean-target>clean</clean-target>
-                <id>jar</id>
             </reference>
         </references>
     </configuration>
