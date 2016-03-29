@@ -17,8 +17,11 @@
             var _class = sender === $nickName ? "me" : "other";
             var usernames = JSON.parse(evt.data).usernames;
             
-            if (body !== undefined)
+            if (body !== undefined){
                 $messagesCount++;
+                if (body.indexOf($nickName) > -1)
+                    new Audio("sounds/duck.wav").play();
+            }
             
             manageScroll();
             if (sender === undefined && body !== undefined)
@@ -69,7 +72,7 @@
         }
         
         function buildJSON(sender, message, received){
-            return '{"message":"' + message + '", "sender":"'+ sender + '", "received":"' + received + '"}';
+            return '{"message":"' + message + '", "sender":"'+ sender + '", "received":"' + received + '", "room":"' + room + '"}';
         }
         
         function setUsername(username){
@@ -77,7 +80,7 @@
         }
         
         function ready() {
-            $message = $('#message');
+            $message = $('#messageChat');
             $chatWindow = $('#chatContent');
             $userWindow = $('#userContent');
             room = $('#title').text().split(" ")[0].substring(1);
@@ -86,12 +89,12 @@
             $message.focus();
                         
             
-            $('#message').bind("enterKey", function(evt) {
+            $('#messageChat').bind("enterKey", function(evt) {
                 evt.preventDefault();                
                 sendMessage(buildJSON($nickName, $message.val(), ""));
             });
             
-            $('#message').keyup(function (e){
+            $('#messageChat').keyup(function (e){
                 if (e.keyCode === 13){
                     $(this).trigger("enterKey");
                 }
@@ -99,5 +102,24 @@
 
             $('#leave-room').click(function(){
                 leaveRoom();
+            });
+        }
+        
+        function isUsername(username) {
+            return ($(username).text().substring(1).toLowerCase().indexOf($('#messageSearch').val()) >= 0);
+        }
+
+        function searchUsername(username) {
+            if (!isUsername(username)) {
+                $(username).hide();
+            } else {
+                $(username).show();
+            }
+        }
+
+        function findUser(){
+            $('#userContent p').each(function (index, username){
+                searchUsername(username);
+                if ($('#messageSearch').val() === "") $('#userContent p').show();
             });
         }

@@ -37,7 +37,7 @@ textarea {
     overflow-y: scroll;
 }
 
-#message{
+.chatInputText{
     height: 40px;
 }
 

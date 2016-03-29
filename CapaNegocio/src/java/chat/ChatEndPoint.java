@@ -53,13 +53,9 @@ public class ChatEndPoint {
         }
     }
 
-    private void sendMessage(Session sessions, String message) throws IOException, EncodeException {
-        String room = (String) sessions.getUserProperties().get("room");
-        for (Session session : sessions.getOpenSessions()) {
-            if (session.isOpen() && room.equals(session.getUserProperties().get("room"))) {
-                session.getBasicRemote().sendObject(message);
-            }
-        }
+    private void sendMessage(Session session, String message) throws IOException, EncodeException {
+        String room = message.substring(message.lastIndexOf(":") + 2, message.lastIndexOf('"'));
+        rooms.get(room).processMesage(session, message);
     }
 
     private void joinedMessage(String username) throws IOException, EncodeException {
@@ -87,5 +83,9 @@ public class ChatEndPoint {
                 );
             }
         }
+    }
+    
+    public static HashMap<String, Room> getChatRooms(){
+        return rooms;
     }
 }
