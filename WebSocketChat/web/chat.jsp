@@ -32,11 +32,11 @@
         <div class="col-md-9 chatContentParent">
             <div id="chatContent">
             </div>
-            <input autocomplete="off" type="text" class="chatInputText col-xs-12" id="message" placeholder="Write a message...">
+            <input autocomplete="off" type="text" class="chatInputText col-xs-12" id="messageChat" placeholder="Write a message...">
         </div>
         <div class="col-md-3 chatContentParent">
             <div id="userContent"></div>
-            <input autocomplete="off" type="text" class="chatInputText col-xs-12" id="message" placeholder="Search a user...">
+            <input autocomplete="off" type="text" class="chatInputText col-xs-12" id="messageSearch" placeholder="Search a user..." onkeyup="findUser()">
         </div>
     </div>
     <br>
