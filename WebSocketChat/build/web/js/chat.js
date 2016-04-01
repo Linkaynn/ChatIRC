@@ -33,10 +33,10 @@
                 $chatWindow.scrollTop($lastOffset);
             
             if (usernames !== undefined){
-                var x = usernames.split(",");
+                var users = usernames.split(",");
                 $userWindow.html("");
-                for (var i=0; i<x.length; i++){
-                    $userWindow.html($userWindow.html() + "<p><span class=\"" + _class + "\">" + x[i] + "</span></p>");
+                for (var i=0; i<users.length; i++){
+                    $userWindow.html($userWindow.html() + "<p><span class=\"" + _class + "\">" + users[i] + "</span></p>");
                 }
             }
             
@@ -64,11 +64,12 @@
         }
 
         function leaveRoom() {
+            wsocket.send(buildJSON($nickName, "/exit", ""));
             wsocket.close();
             $chatWindow.empty();
-            $('.chat-wrapper').hide();
-            $('.chat-signin').show();
-            $nickName.focus();
+            //$('.chat-wrapper').hide();
+            //$('.chat-signin').show();
+            //$nickName.focus(); 
         }
         
         function buildJSON(sender, message, received){
@@ -87,7 +88,15 @@
                                   
             connectToChatserver();
             $message.focus();
-                        
+            
+            $('#listRooms').bind("listRooms", function(evt){
+                evt.preventDefault();                
+                sendMessage(buildJSON($nickName, "/salas", ""));
+            });
+            
+            $('#listRooms').click(function (){
+               $(this).trigger("listRooms");
+            });
             
             $('#messageChat').bind("enterKey", function(evt) {
                 evt.preventDefault();                
@@ -100,7 +109,7 @@
                 }
             });
 
-            $('#leave-room').click(function(){
+            $('#leave-room').click(function(){    
                 leaveRoom();
             });
         }

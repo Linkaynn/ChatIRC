@@ -6,19 +6,12 @@
 package util;
 
 import chat.ChatEndPoint;
-import com.sun.xml.ws.util.StringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.stream.Collector;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
-/**
- *
- * @author adrian
- */
 public class Room {
     private String name;
     private User owner;
@@ -30,16 +23,19 @@ public class Room {
         this.owner = owner;
         this.isPublic = isPublic;
         users.add(owner);
-        owner.enter(name);
     }
     
     public void addUser(User user){
         users.add(user);
-        user.enter(name);
     }
     
     public void removeUser(User user){
         users.remove(user);
+    }
+    
+    public void removeUser(String userName){
+        for (User user: users)
+            if(user.username().equals(userName)) users.remove(user);
     }
     
     public ArrayList<String> userList(){
@@ -59,15 +55,26 @@ public class Room {
 
     public void processMesage(Session session, String JSON) throws IOException, EncodeException{
         String msg = JSON.substring(JSON.indexOf(":") +2, JSON.indexOf(",") -1);
-        if (isInstruction(msg))
-            session.getBasicRemote().sendObject(processInstruction(msg, JSON));
-        else
+        
+        if (!isInstruction(msg)){
+            if (msg.toLowerCase().substring(0, 3).equals("/me"))
+                JSON = meInstruction(msg, JSON);
             for (User user : users)
-                user.session().getBasicRemote().sendObject(JSON);
+                user.session(name).getBasicRemote().sendObject(JSON);
+        }
+        else
+            session.getBasicRemote().sendObject(processInstruction(msg, JSON));
+           
+    }
+    
+    private String meInstruction(String msg, String JSON){
+        String sender = JSON.substring(JSON.indexOf("\"sender\":") + "\"sender\":".length() + 1, JSON.indexOf("\", \"received"));
+        JSON = JSON.replaceFirst(sender, "#" + name);
+        return JSON.replaceFirst(msg.substring(0, 3), sender); 
     }
 
     private boolean isInstruction(String message) {
-        return message.charAt(0) == '/';
+        return !(message.substring(0, 3).equals("/me")) && message.charAt(0) == '/';
     }
 
     private String processInstruction(String msg, String JSON) {
@@ -75,8 +82,10 @@ public class Room {
         JSON = JSON.replaceFirst(sender, "#" + name);
         if (msg.toLowerCase().equals("/salas"))
             return JSON.replaceFirst(msg, listRoomInstruction());
-        if (msg.toLowerCase().substring(0, 3).equals("/me"))
-            return JSON.replaceFirst(msg.substring(0, 3), sender);
+        else if (msg.toLowerCase().equals("/exit")){
+            exitRoomInstruction(sender);
+            return "";
+        }
         else
             return JSON.replaceFirst(msg, "Command not found.");
     }
@@ -86,6 +95,11 @@ public class Room {
         for (Room room: ChatEndPoint.getChatRooms().values())
             rooms += room.name + "<br>";
         return rooms;
+    }
+
+    private void exitRoomInstruction(String sender)  {
+        ChatEndPoint.removeUser(sender);
+        removeUser(sender);
     }
     
 }

@@ -2,40 +2,42 @@ package util;
 
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.websocket.Session;
 
 public class User {
     private String username;
-    private ArrayList<String> rooms = new ArrayList<>();
-    private Session session;
+    private String lastRoom;
+    private HashMap<String, Session> sessions = new HashMap<>();
 
     public User(String username, String room, Session session) {
         this.username = username;
-        enter(room);
-        this.session = session;
-    }
-
-    public void enter(String room) {
-        rooms.add(room);
+        sessions.put(room, session);
+        lastRoom = room;
     }
 
     public void exit(String room){
-        rooms.remove(room);
+        sessions.remove(room);
     }
 
     public String username() {
         return username;
     }
 
-    public Session session() {
-        return session;
+    public void addSession(String room, Session session){
+        lastRoom = room;
+        sessions.put(room, session);
+    }
+    
+    public Session session(String room) {
+        return sessions.get(room);
     }
 
     public boolean isIn(String room){
-        return rooms.contains(room);
+        return sessions.containsKey(room);
     }
     
     public String lastRoom(){
-        return rooms.get(rooms.size() - 1);
+        return lastRoom;
     }
 }

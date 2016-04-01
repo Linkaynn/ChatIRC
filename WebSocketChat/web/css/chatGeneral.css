@@ -2,7 +2,7 @@ body{
     background-color:#EFFBEF;
 }
 
-input, textarea, #chatContentParent{
+.chatContentParent input, .chatContentParent textarea{
     box-sizing:border-box;
     border: outset 2px;
     border-radius: 10px;
@@ -47,12 +47,11 @@ h1{
     text-shadow: 2px 2px 4px #0C4E2C;
 }
 
-.input-group {
+.chatContentParent .input-group {
     box-sizing:border-box;
     border: outset 2px;
     border-radius: 10px;
     border-color:#BDBDBD;
-
 }
 
 .navbar{

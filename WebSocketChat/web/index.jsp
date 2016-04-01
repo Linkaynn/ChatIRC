@@ -17,29 +17,31 @@
             <form class="text-center" action="FrontController">
                 <input type="text" placeholder="Nick" name="username" id="nickGuest">
                 <br>
+                <input type="hidden" name="room" value="General">
                 <input type="hidden" name="command" value="Anonymous">
                 <input class="btn btn-success" type="submit" value="Enter">
             </form>
         </div>
         <div id="formLogin" class="col-md-4 col-xs-12">
-            <form class="text-center" action="FrontController">
+            <form class="text-center" method="post" action="FrontController">
                 <input type="text" placeholder="Username" name="username">
                 <br>
-                <input type="password" placeholder="Password">
+                <input type="password" name="password" placeholder="Password">
                 <br>
                 <a href="#">Forgot your password?</a>
                 <br>
+                <input type="hidden" name="room" value="General">
                 <input type="hidden" name="command" value="Login">
                 <input class="btn btn-success" type="submit" value="Login">
             </form>
         </div>
         <div id="formRegister" class="col-md-4 col-xs-12">
-            <form class="text-center" action="FrontController">
+            <form class="text-center" method="post" action="FrontController">
                 <input type="text" placeholder="Username" name="username">
                 <br>
-                <input type="password" placeholder="Password">
+                <input type="password" name="password" placeholder="Password">
                 <br>
-                <input type="email" placeholder="Email">
+                <input type="email" name="email" placeholder="Email">
                 <br>
                 <input type="hidden" name="command" value="Register">
                 <input class="btn btn-success" type="submit" value="Register">
