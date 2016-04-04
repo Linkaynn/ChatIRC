@@ -18,19 +18,21 @@
         
     </div>
     <ul>
-        <li><a href="#" data-toggle="modal" data-target="#myModal">Crear sala</a></li>
-        <li id="listRooms"><a href="#">Listar salas</a></li>
+        <div class="pull-right">
+        <li ><a href="#" data-toggle="modal" data-target="#myModal"><i title="Crear sala" class="fa fa-plus"></i></a></li>
+        <li id="listRooms"><a href="#"><i title="Listar salas" class="fa fa-list-alt"></i></a></li>
         <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn" onclick="myFunction()">Ajustes</a>
+            <a href="javascript:void(0)" class="dropbtn" onclick="myFunction()"><i title="Ajustes" class="fa fa-cog"></i></a>
             <div class="dropdown-content" id="myDropdown">
                 <a href="#">Link 1</a>
                 <a href="#">Link 2</a>
                 <a href="#">Link 3</a>
             </div>
         </li>
-        <li class="pull-right" id="leave-room">
-            <a href="http://localhost:8080/WebSocketChat"><i class="fa fa-sign-out"></i></a>
+        <li id="leave-room">
+            <a href="http://localhost:8080/WebSocketChat"><i title="Abandonar sala" class="fa fa-times"></i></a>
         </li>
+        </div>
     </ul>
      
 </div>
