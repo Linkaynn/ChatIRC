@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package commands;
 
-import facades.LoginFacade;
 import facades.LoginFacadeLocal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,27 +7,14 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-public class Login extends Command {
+public class Logout extends Command {
 
-    
     @Override
     public void process() {
         LoginFacadeLocal loginFacade = lookupLoginFacadeBean();
-        String name = request.getParameter("username");
-        String password = request.getParameter("password");
+        String name = request.getParameter("user");
         entities.Login entity = loginFacade.find(name);
-        if (entity == null) forward("index.jsp");
-        else{
-            if (entity.getPassword().equals(password)){
-                if(entity.getStatus() == 0){
-                    entity.setStatus(1);
-                    loginFacade.edit(entity);
-                    forward("chat.jsp");
-                }
-                forward("index.jsp");
-            }
-            forward("index.jsp");
-        }
+        if (entity.getName() != null) entity.setStatus(0);
         forward("index.jsp");
     }
 
@@ -46,4 +27,5 @@ public class Login extends Command {
             throw new RuntimeException(ne);
         }
     }
+    
 }
