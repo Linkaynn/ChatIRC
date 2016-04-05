@@ -45,6 +45,10 @@ public class Room {
         return usernames;
     }
     
+    public boolean userExists(User username){
+        return users.contains(username);
+    }
+    
     public String users(){
         String result = "";
         for (String user : userList()) {

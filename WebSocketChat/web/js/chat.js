@@ -99,8 +99,14 @@
             });
             
             $('#messageChat').bind("enterKey", function(evt) {
-                evt.preventDefault();                
-                sendMessage(buildJSON($nickName, $message.val(), ""));
+                evt.preventDefault(); 
+                if ($message.val().indexOf("/join") >= 0){
+                    var win = window.open("http://localhost:8080/WebSocketChat/FrontController?username=" + $nickName.substring(1) + "&room=" + $message.val().split(" ")[1] + "&command=Anonymous", "_blank");
+                    if(win) win.focus();
+                    else alert('Please allow popups for this site');
+                }
+                else
+                    sendMessage(buildJSON($nickName, $message.val(), ""));
             });
             
             $('#messageChat').keyup(function (e){

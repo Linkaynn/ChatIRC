@@ -31,7 +31,7 @@ public class ChatEndPoint {
             }else
                 user = new User(username, room, session);
             users.put(username, user);
-            if (rooms.containsKey(room)) rooms.get(room).addUser(user);
+            if (rooms.containsKey(room) && !rooms.get(room).userExists(user)) rooms.get(room).addUser(user);
             else rooms.put(room, new Room(room, user, true));
             joinedMessage(username);
         } catch (IOException | EncodeException ex) {

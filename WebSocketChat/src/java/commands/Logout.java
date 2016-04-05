@@ -14,7 +14,10 @@ public class Logout extends Command {
         LoginFacadeLocal loginFacade = lookupLoginFacadeBean();
         String name = request.getParameter("user");
         entities.Login entity = loginFacade.find(name);
-        if (entity.getName() != null) entity.setStatus(0);
+        if (entity.getName() != null){
+            entity.setStatus(0);
+            loginFacade.edit(entity);
+        }
         forward("index.jsp");
     }
 
