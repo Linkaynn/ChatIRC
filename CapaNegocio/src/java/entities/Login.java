@@ -27,17 +27,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Login.findAll", query = "SELECT l FROM Login l"),
     @NamedQuery(name = "Login.findByName", query = "SELECT l FROM Login l WHERE l.name = :name"),
-    @NamedQuery(name = "Login.findByPassword", query = "SELECT l FROM Login l WHERE l.password = :password")})
+    @NamedQuery(name = "Login.findByPassword", query = "SELECT l FROM Login l WHERE l.password = :password"),
+    @NamedQuery(name = "Login.findByStatus", query = "SELECT l FROM Login l WHERE l.status = :status"),
+    @NamedQuery(name = "Login.findByEmail", query = "SELECT l FROM Login l WHERE l.email = :email")})
 public class Login implements Serializable {
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "STATUS")
-    private int status;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 100)
-    @Column(name = "EMAIL")
-    private String email;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,6 +44,14 @@ public class Login implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "PASSWORD")
     private String password;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "STATUS")
+    private int status;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 100)
+    @Column(name = "EMAIL")
+    private String email;
 
     public Login() {
     }
@@ -59,9 +60,10 @@ public class Login implements Serializable {
         this.name = name;
     }
 
-    public Login(String name, String password) {
+    public Login(String name, String password, int status) {
         this.name = name;
         this.password = password;
+        this.status = status;
     }
 
     public String getName() {
@@ -78,6 +80,22 @@ public class Login implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -103,22 +121,6 @@ public class Login implements Serializable {
     @Override
     public String toString() {
         return "entities.Login[ name=" + name + " ]";
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
     
 }

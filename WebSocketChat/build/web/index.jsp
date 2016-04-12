@@ -47,6 +47,8 @@
                 <input class="btn btn-success" type="submit" value="Register">
             </form>
         </div>
+    </div>
+</body>
 <script>
     function generateNick(){
         return "guest" + (Math.floor(Math.random() * 89000) + 10000);

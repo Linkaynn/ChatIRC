@@ -8,8 +8,7 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/chatGeneral.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link href="libs/botstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet">
-    <script src="libs/botstrap-switch/js/bootstrap-switch.min.js"></script>
+    <script>var password = <% out.print(request.getParameter("password")); %>   </script>
     <script src="js/chat.js"></script>
 
 </head>
@@ -34,7 +33,11 @@
             </div>
         </li>
         <li id="leave-room">
-            <a href="http://localhost:8080/WebSocketChat"><i title="Abandonar sala" class="fa fa-times"></i></a>
+            <form action="FrontController">
+                <input type="hidden" name="user" value=<% out.print(request.getParameter("username"));  %>>
+                <input type="hidden" name="command" value="Logout">
+                <a type="submit" href="http://localhost:8080/WebSocketChat"><i title="Abandonar sala" class="fa fa-times"></i></a>
+            </form>
         </li>
         </div>
     </ul>
@@ -50,12 +53,17 @@
               <button type="button" class="close" data-dismiss="modal">&times;</button>
               <h2 class="modal-title" style="margin: 15px 0 10px 0;">Create room</h2>
               <input type="hidden" name="username" value="<% out.print(request.getParameter("username")); %>">
-              <p style="margin-bottom: 5px"><input type="text" placeholder="Name of the room..." name="room"><br></p>
+              <div class="col-md-12"><p style="margin-bottom: 5px"><input type="text" placeholder="Name of the room..." name="room"><br></p></div>
               <p>
-              <input id="private-room-checkbox" type="checkbox" name="my-checkbox">
-                  <label>&nbsp;&nbsp;Private</label> 
-              <p><input hidden="hidden" id="private-room-password" type="password" placeholder="Password" /></p>
+                
+              <div class="col-md-3">
+                  <label>&nbsp;&nbsp;Private</label>
+                  <input id="private-checkbox" type="checkbox" name="my-checkbox" onclick="status()">
+                </div
               </p>
+              <p>
+              <div class="col-md-12"><input hidden="hidden" id="private-room-password" name="password" type="password" placeholder="Password" /></div>
+              </p>              
             </div>
             <div class="modal-footer">
                 <input type="hidden" name="command" value="Anonymous">
@@ -83,7 +91,16 @@
 
 
 <script>
-    $("[name='my-checkbox']").bootstrapSwitch();
+    
+    var checkBoxStatus = false;
+    
+    function status(){
+        checkBoxStatus = !checkBoxStatus;
+        if(!checkBoxStatus)
+            $('#private-room-password').attr("hidden", true);
+        else
+            $('#private-room-password').removeAttr("hidden");            
+    }
 
     /* When the user clicks on the button,
      toggle between hiding and showing the dropdown content */
@@ -100,7 +117,7 @@
                 var openDropdown = dropdowns[d];
                 if (openDropdown.classList.contains('show')) {
                     openDropdown.classList.remove('show');
-                }
+                } 
             }
         }
     };

@@ -20,11 +20,9 @@ public class Register extends Command{
         if (entity == null){
             entity = loginFacade.find(email);
             if (entity == null){
-                entity = new Login(name, password);
+                entity = new Login(name, password, 0);
                 entity.setEmail(email);
-                entity.setStatus(1);
                 loginFacade.create(entity);
-                forward("chat.jsp");
             }
         }
         forward("index.jsp");

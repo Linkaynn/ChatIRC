@@ -23,15 +23,12 @@ public class FrontController extends HttpServlet {
     Class result;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
             
-        try (PrintWriter out = response.getWriter()) {
+        
             Command command = getCommand(request);
             command.init(getServletContext(), request, response);
             command.process();
-        } catch (Exception e){
-            Logger.getLogger(FrontController.class.getName()).log(Level.SEVERE, null, e);
-        }
+        
     }
     
     private Class getClass(String requestCommand){

@@ -16,6 +16,7 @@ public class Room {
     private String name;
     private User owner;
     private boolean isPublic; 
+    private String password;
     private ArrayList<User> users = new ArrayList<>();
 
     public Room(String name, User owner, boolean isPublic) {
@@ -24,6 +25,21 @@ public class Room {
         this.isPublic = isPublic;
         users.add(owner);
     }
+    
+    public Room(String name, User owner, boolean isPublic, String password) {
+        this(name, owner, isPublic);
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    
     
     public void addUser(User user){
         users.add(user);

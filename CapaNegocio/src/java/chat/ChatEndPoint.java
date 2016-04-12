@@ -14,7 +14,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import util.*;
 
-@ServerEndpoint(value = "/chat/{room}/{username}")
+@ServerEndpoint(value = "/chat/{room}/{username}/{password}")
 public class ChatEndPoint {
 
     private final Logger log = Logger.getLogger(getClass().getName());
@@ -22,18 +22,30 @@ public class ChatEndPoint {
     private static HashMap<String, Room> rooms = new HashMap<>();
 
     @OnOpen
-    public void open(final Session session, @PathParam("room") final String room, @PathParam("username") final String username) {
+    public void open(final Session session, @PathParam("room") final String room, @PathParam("username") final String username, @PathParam("password") final String password) {
         try {
             User user;
-            if (users.containsKey(username)){
-                user = users.get(username);
-                user.addSession(room, session);
-            }else
-                user = new User(username, room, session);
-            users.put(username, user);
-            if (rooms.containsKey(room) && !rooms.get(room).userExists(user)) rooms.get(room).addUser(user);
-            else rooms.put(room, new Room(room, user, true));
-            joinedMessage(username);
+            if (rooms.containsKey(room)){
+                if (rooms.get(room).getPassword().equals(password)){
+                  if (users.containsKey(username)){
+                    user = users.get(username);
+                    user.addSession(room, session);
+                  }else
+                    user = new User(username, room, session);
+                  users.put(username, user);
+                  rooms.get(room).addUser(user);
+                  joinedMessage(username);
+                }
+            }else{
+                if (users.containsKey(username)){
+                    user = users.get(username);
+                    user.addSession(room, session);
+                  }else
+                    user = new User(username, room, session);
+                  users.put(username, user);
+                rooms.put(room, new Room(room, user, true, password));
+                joinedMessage(username);
+            }
         } catch (IOException | EncodeException ex) {
             Logger.getLogger(ChatEndPoint.class.getName()).log(Level.SEVERE, null, ex);
         }
