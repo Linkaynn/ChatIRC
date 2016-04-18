@@ -36,7 +36,7 @@
             <form action="FrontController">
                 <input type="hidden" name="user" value=<% out.print(request.getParameter("username"));  %>>
                 <input type="hidden" name="command" value="Logout">
-                <a type="submit" href="http://localhost:8080/WebSocketChat"><i title="Abandonar sala" class="fa fa-times"></i></a>
+                <a style="cursor: pointer;" onclick="$(this).parent('form').submit();" ><i title='Abandonar sala' class='fa fa-times'></i></a>
             </form>
         </li>
         </div>

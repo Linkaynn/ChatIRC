@@ -60,7 +60,6 @@
 
         function connectToChatserver() {
             wsocket = new WebSocket(serviceLocation + room + "/" + $nickName + "/" + password);
-            alert(wsocket);
             wsocket.onmessage = onMessageReceived;
         }
 

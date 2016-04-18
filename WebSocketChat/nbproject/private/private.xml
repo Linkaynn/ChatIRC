@@ -5,12 +5,7 @@
         <group>
             <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/web/chat.jsp</file>
             <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/web/index.jsp</file>
-            <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/src/java/commands/Command.java</file>
-            <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/src/java/commands/Anonymous.java</file>
-            <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/src/java/commands/Login.java</file>
-            <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/src/java/commands/Register.java</file>
-            <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/src/java/presentation/FrontController.java</file>
-            <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/src/java/commands/Logout.java</file>
+            <file>file:/C:/Users/adrian/Documents/ChatIRC/WebSocketChat/web/js/chat.js</file>
         </group>
     </open-files>
 </project-private>
