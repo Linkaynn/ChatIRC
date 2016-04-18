@@ -9,6 +9,8 @@ import chat.ChatEndPoint;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
@@ -42,16 +44,22 @@ public class Room {
     
     
     public void addUser(User user){
-        users.add(user);
+        if(!users.contains(user))
+            users.add(user);
     }
     
     public void removeUser(User user){
         users.remove(user);
     }
     
-    public void removeUser(String userName){
-        for (User user: users)
-            if(user.username().equals(userName)) users.remove(user);
+    public void removeUser(String userName) throws IOException, EncodeException{
+        for (User user: users){
+            if(user.username().equals(userName)){ 
+                users.remove(user);
+                updateUserList(user, "has left.");
+                return;
+            }
+        }
     }
     
     public ArrayList<String> userList(){
@@ -116,10 +124,45 @@ public class Room {
             rooms += room.name + "<br>";
         return rooms;
     }
+    
+    public void joinedMessage(User user) throws IOException, EncodeException {
+
+        user.session(name).getBasicRemote().sendObject(
+                new JSONBuilder().put("message").as("Welcome to #" + name + ", " + user.username() + "!")
+                        .put("sender").as("#" + name)
+                        .put("received").as("").build());
+        
+        user.session(name).getBasicRemote().sendObject(
+                new JSONBuilder().put("usernames").as(users()).build()
+        );
+
+        updateUserList(user, "has joined.");
+    }
+
+    private void updateUserList(User user, String message) throws IOException, EncodeException {
+        for (User u: users){
+            if (u.session(name).isOpen() && u.isIn(name) && !u.username().equals(user.username())){
+                u.session(name).getBasicRemote().sendObject(
+                        new JSONBuilder()
+                                .put("message").as(user.username() + " " + message)
+                                .put("username").as(user.username())
+                                .put("received").as("").build()
+                );
+                u.session(name).getBasicRemote().sendObject(
+                        new JSONBuilder().put("usernames").as(users()).build()
+                );
+            }
+        }
+    }
 
     private void exitRoomInstruction(String sender)  {
         ChatEndPoint.removeUser(sender);
-        removeUser(sender);
+        try {
+            removeUser(sender);
+        } catch (IOException | EncodeException ex) {
+            Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
+
 }

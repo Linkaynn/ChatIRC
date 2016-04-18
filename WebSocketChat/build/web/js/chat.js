@@ -67,6 +67,7 @@
             wsocket.send(buildJSON($nickName, "/exit", ""));
             wsocket.close();
             $chatWindow.empty();
+            $('#exitForm').submit();
             //$('.chat-wrapper').hide();
             //$('.chat-signin').show();
             //$nickName.focus(); 

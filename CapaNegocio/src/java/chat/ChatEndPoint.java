@@ -34,7 +34,7 @@ public class ChatEndPoint {
                     user = new User(username, room, session);
                   users.put(username, user);
                   rooms.get(room).addUser(user);
-                  joinedMessage(username);
+                  rooms.get(room).joinedMessage(user);
                 }
             }else{
                 if (users.containsKey(username)){
@@ -44,7 +44,7 @@ public class ChatEndPoint {
                     user = new User(username, room, session);
                   users.put(username, user);
                 rooms.put(room, new Room(room, user, true, password));
-                joinedMessage(username);
+                rooms.get(room).joinedMessage(user);
             }
         } catch (IOException | EncodeException ex) {
             Logger.getLogger(ChatEndPoint.class.getName()).log(Level.SEVERE, null, ex);
@@ -65,33 +65,6 @@ public class ChatEndPoint {
         rooms.get(room).processMesage(session, message);
     }
 
-    private void joinedMessage(String username) throws IOException, EncodeException {
-        final String room = users.get(username).lastRoom();
-
-        users.get(username).session(room).getBasicRemote().sendObject(
-                new JSONBuilder().put("message").as("Welcome to #" + room + ", " + username + "!")
-                        .put("sender").as("#" + room)
-                        .put("received").as("").build());
-        
-        users.get(username).session(room).getBasicRemote().sendObject(
-                new JSONBuilder().put("usernames").as(rooms.get(room).users()).build()
-        );
-
-        for (User user: users.values()){
-            if (user.session(room).isOpen() && user.isIn(room) && !user.username().equals(username)){
-                user.session(room).getBasicRemote().sendObject(
-                        new JSONBuilder().put("status").as("joined")
-                                .put("message").as(username + " has " + "joined.")
-                                .put("username").as(username)
-                                .put("received").as("").build()
-                );
-                user.session(room).getBasicRemote().sendObject(
-                        new JSONBuilder().put("usernames").as(rooms.get(room).users()).build()
-                );
-            }
-        }
-    }
-    
     public static HashMap<String, Room> getChatRooms(){
         return rooms;
     }

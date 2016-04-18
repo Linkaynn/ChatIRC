@@ -22,7 +22,8 @@
         <li><a href="#"><i class="fa fa-user"></i> @<% out.print(request.getParameter("username"));  %></a> </li>
 
         <div class="pull-right">
-        <li ><a href="#" data-toggle="modal" data-target="#myModal"><i title="Crear sala" class="fa fa-plus"></i></a></li>
+        <li ><a onclick="changeModal('Create room', 'Create')" href="#" data-toggle="modal" data-target="#myModal"><i title="Crear sala" class="fa fa-plus"></i></a></li>
+<li><a onclick="changeModal('Join room', 'Join')" href="#" data-toggle="modal" data-target="#myModal"><i title="Unirse a sala" class="fa fa-users" aria-hidden="true"></i></a></li>
         <li id="listRooms"><a href="#"><i title="Listar salas" class="fa fa-list-alt"></i></a></li>
         <li class="dropdown">
             <a href="javascript:void(0)" class="dropbtn" onclick="myFunction()"><i title="Ajustes" class="fa fa-cog"></i></a>
@@ -33,10 +34,10 @@
             </div>
         </li>
         <li id="leave-room">
-            <form action="FrontController">
+            <form id="exitForm" action="FrontController">
                 <input type="hidden" name="user" value=<% out.print(request.getParameter("username"));  %>>
                 <input type="hidden" name="command" value="Logout">
-                <a style="cursor: pointer;" onclick="$(this).parent('form').submit();" ><i title='Abandonar sala' class='fa fa-times'></i></a>
+                <a style="cursor: pointer;" onclick="leaveRoom()" ><i title='Abandonar sala' class='fa fa-times'></i></a>
             </form>
         </li>
         </div>
@@ -67,7 +68,7 @@
             </div>
             <div class="modal-footer">
                 <input type="hidden" name="command" value="Anonymous">
-                <input type="submit" class="btn btn-default" value="Create">
+                <input type="submit" id="modal-submit" class="btn btn-default" value="Create">
             </div>
         </div>
     </div>
@@ -123,6 +124,11 @@
     };
     setUsername("@<% out.print(request.getParameter("username"));  %>");
     ready();
+    
+    function changeModal(title, submit){
+        $('.modal-title').text(title);
+        $('#modal-submit').val(submit);
+    }
 </script>
 <script src="js/util.js"></script>
 
