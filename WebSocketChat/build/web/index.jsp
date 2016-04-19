@@ -1,4 +1,7 @@
+<%@page import="javax.naming.Name"%>
+<%@page import="javax.naming.InitialContext"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="util.SingletonBean"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +15,13 @@
 </head>
 <body>
     <div class="container-fluid col-md-12">
+        
         <h1>IRC Chat</h1>
+        <h2> Usuarios conectados:  
+            <%SingletonBean singleton = InitialContext.doLookup("java:global/ChatIRC/CapaNegocio/SingletonBean"); 
+            out.print(singleton.getUsers());
+        %>
+        </h2>
         <div id="formEnter" class="col-md-4 col-xs-12">
             <form class="text-center" action="FrontController">
                 <input type="text" placeholder="Nick" name="username" id="nickGuest">

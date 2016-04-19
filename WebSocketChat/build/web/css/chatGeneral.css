@@ -70,7 +70,6 @@ ul {
     list-style-type: none;
     padding: 0;
     overflow: hidden;
-    background-color:#52A078;
 }
 
 li {
@@ -127,3 +126,30 @@ li.dropdown {
 ::-webkit-scrollbar-thumb:hover {
     background-color: #aaa;
 }
+ 
+.glyphicon{
+    font-size: large;
+}
+ 
+.legends p{
+    font-size: 20px;
+}
+ 
+.legend-ul li{
+    font-size: 20px;
+}
+ 
+h2{
+    font-weight: bold;
+}
+
+
+.menuOptions{
+    background-color:#8BC34A;
+}
+ 
+.menuOptions li {
+    float: left;
+}
+
+

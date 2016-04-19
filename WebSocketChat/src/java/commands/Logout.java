@@ -12,7 +12,7 @@ public class Logout extends Command {
     @Override
     public void process() {
         LoginFacadeLocal loginFacade = lookupLoginFacadeBean();
-        String name = request.getParameter("user");
+        String name = request.getParameter("username");
         entities.Login entity = loginFacade.find(name);
         if (entity != null && entity.getName() != null){
             entity.setStatus(0);

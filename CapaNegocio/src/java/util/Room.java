@@ -26,6 +26,7 @@ public class Room {
         this.owner = owner;
         this.isPublic = isPublic;
         users.add(owner);
+        SingletonBean.addUser();
     }
     
     public Room(String name, User owner, boolean isPublic, String password) {
@@ -44,8 +45,10 @@ public class Room {
     
     
     public void addUser(User user){
-        if(!users.contains(user))
+        if(!users.contains(user)){
             users.add(user);
+            SingletonBean.addUser();
+        }
     }
     
     public void removeUser(User user){
@@ -57,6 +60,7 @@ public class Room {
             if(user.username().equals(userName)){ 
                 users.remove(user);
                 updateUserList(user, "has left.");
+                SingletonBean.removeUser();
                 return;
             }
         }
@@ -163,6 +167,5 @@ public class Room {
             Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-
+   
 }

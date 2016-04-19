@@ -42,7 +42,7 @@ public class ChatEndPoint {
                     user.addSession(room, session);
                   }else
                     user = new User(username, room, session);
-                  users.put(username, user);
+                users.put(username, user);
                 rooms.put(room, new Room(room, user, true, password));
                 rooms.get(room).joinedMessage(user);
             }

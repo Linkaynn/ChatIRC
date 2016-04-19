@@ -5,10 +5,13 @@
         var $chatWindow;
         var $userWindow;
         var room = '';
+        var $usersIgnore = [];
         
         var needScroll = false;
-        $lastOffset = 0;
-        $messagesCount = 0;
+        var $lastOffset = 0;
+        var $messagesCount = 0;
+        
+        var isIgnored = false;
 
         function onMessageReceived(evt) {            
             
@@ -24,9 +27,14 @@
             }
             
             manageScroll();
+            
+            $.each($usersIgnore, function(index, user){
+                if ("@" + user === sender) isIgnored = true;
+            });
+            
             if (sender === undefined && body !== undefined)
                 $chatWindow.html($chatWindow.html() + "<p><span class=\"" + _class + "Message\">" + body + "</span></p>");  
-            else if (sender !== undefined)
+            else if (sender !== undefined && !isIgnored)
                 $chatWindow.html($chatWindow.html() + "<p><span class=\"" + _class + "\">" + sender  + ":&nbsp</span><span class=\"" + _class + "Message\">" + body + "</span></p>");
 
             if (needScroll)
@@ -68,9 +76,6 @@
             wsocket.close();
             $chatWindow.empty();
             $('#exitForm').submit();
-            //$('.chat-wrapper').hide();
-            //$('.chat-signin').show();
-            //$nickName.focus(); 
         }
         
         function buildJSON(sender, message, received){
@@ -105,8 +110,28 @@
                     var win = window.open("http://localhost:8080/WebSocketChat/FrontController?username=" + $nickName.substring(1) + "&room=" + $message.val().split(" ")[1] + "&command=Anonymous", "_blank");
                     if(win) win.focus();
                     else alert('Please allow popups for this site');
-                }
-                else
+                } else if($message.val().indexOf("/ignore @") >= 0 && $.trim($message.val()).length > 9){
+                    var user = $message.val().substring(9 , $message.val().length);
+                    var contains = $nickName.substring(1) === user;
+                    $.each($usersIgnore, function(index, u){
+                        if (user === u) contains = true;
+                    });
+                    if (!contains){
+                        $usersIgnore[$usersIgnore.length] = user;
+                        $chatWindow.html($chatWindow.html() + "<p><span class=\"meMessage\">@" + user + " has been ignored. If you want to recieve message again from him you must /unignore @" + user + ".</span></p>");
+                    }else{
+                        $chatWindow.html($chatWindow.html() + "<p><span class=\"meMessage\">" + ($nickName.substring(1) === user ? "You can't ignore to yourself, kid." : "@" + user + " is already ignored, dude .l.") + "</span></p>");
+                    }
+                    $message.val('').focus();
+                } else if($message.val().indexOf("/unignore @") >= 0 && $.trim($message.val()).length > 11){
+                    var user = $message.val().substring(11 , $message.val().length);
+                    $usersIgnore.splice($.inArray(user, $usersIgnore), 1);
+                    //alert($usersIgnore.length);
+                    
+                    $chatWindow.html($chatWindow.html() + "<p><span class=\"meMessage\">@" + user + " has been unignored. If you want to ignore again you must type /ignore @" + user + ".</span></p>");
+                    
+                    $message.val('').focus();
+                } else
                     sendMessage(buildJSON($nickName, $message.val(), ""));
             });
             
