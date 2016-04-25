@@ -15,6 +15,14 @@ public class User {
         sessions.put(room, session);
         lastRoom = room;
     }
+    
+    public User(String username, String room, HashMap<String, Session> sessions) {
+        this.username = username;
+        lastRoom = room;
+        this.sessions = sessions;
+    }
+    
+    
 
     public void exit(String room){
         sessions.remove(room);
@@ -40,4 +48,11 @@ public class User {
     public String lastRoom(){
         return lastRoom;
     }
+
+    public HashMap<String, Session> sessions() {
+        return sessions;
+    }
+    
+    
+    
 }

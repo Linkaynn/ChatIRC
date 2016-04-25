@@ -75,6 +75,11 @@
             wsocket.send(buildJSON($nickName, "/exit", ""));
             wsocket.close();
             $chatWindow.empty();
+            new Audio("sounds/closeDoor.wav").play();
+            window.setTimeout(exit,500);
+        }
+        
+        function exit(){
             $('#exitForm').submit();
         }
         

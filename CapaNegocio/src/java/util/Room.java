@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package util;
 
 import chat.ChatEndPoint;
@@ -20,12 +15,14 @@ public class Room {
     private boolean isPublic; 
     private String password;
     private ArrayList<User> users = new ArrayList<>();
-
+    private ArrayList<User> admins = new ArrayList<>();
+    
     public Room(String name, User owner, boolean isPublic) {
         this.name = name;
         this.owner = owner;
         this.isPublic = isPublic;
         users.add(owner);
+        admins.add(owner);
         SingletonBean.addUser();
     }
     
@@ -41,8 +38,6 @@ public class Room {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
     
     public void addUser(User user){
         if(!users.contains(user)){
@@ -73,6 +68,13 @@ public class Room {
         return usernames;
     }
     
+    public ArrayList<String> adminList(){
+        ArrayList<String> adminNames = new ArrayList<>();
+        for (User admin: users) adminNames.add(admin.username());
+        Collections.sort(adminNames);
+        return adminNames;
+    }
+    
     public boolean userExists(User username){
         return users.contains(username);
     }
@@ -87,41 +89,46 @@ public class Room {
 
     public void processMesage(Session session, String JSON) throws IOException, EncodeException{
         String msg = JSON.substring(JSON.indexOf(":") +2, JSON.indexOf(",") -1);
-        
-        if (!isInstruction(msg)){
-            if (msg.toLowerCase().substring(0, 3).equals("/me"))
-                JSON = meInstruction(msg, JSON);
-            for (User user : users)
-                user.session(name).getBasicRemote().sendObject(JSON);
-        }
-        else
-            session.getBasicRemote().sendObject(processInstruction(msg, JSON));
+        if (isInstruction(msg)){
+            String message = processInstruction(msg, JSON);
+            if (message.length() != 0)
+                session.getBasicRemote().sendObject(message);
+        }else
+            broadCast(JSON);
            
-    }
-    
-    private String meInstruction(String msg, String JSON){
-        String sender = JSON.substring(JSON.indexOf("\"sender\":") + "\"sender\":".length() + 1, JSON.indexOf("\", \"received"));
-        JSON = JSON.replaceFirst(sender, "#" + name);
-        return JSON.replaceFirst(msg.substring(0, 3), sender); 
     }
 
     private boolean isInstruction(String message) {
-        return !(message.substring(0, 3).equals("/me")) && message.charAt(0) == '/';
+        return message.charAt(0) == '/';
     }
 
     private String processInstruction(String msg, String JSON) {
         String sender = JSON.substring(JSON.indexOf("\"sender\":") + "\"sender\":".length() + 1, JSON.indexOf("\", \"received"));
-        JSON = JSON.replaceFirst(sender, "#" + name);
-        if (msg.toLowerCase().equals("/salas"))
+        if (msg.toLowerCase().equals("/salas")){
+            JSON = JSON.replaceFirst(sender, "#" + name);
             return JSON.replaceFirst(msg, listRoomInstruction());
-        else if (msg.toLowerCase().equals("/exit")){
+        }else if (msg.toLowerCase().equals("/exit")){
             exitRoomInstruction(sender);
             return "";
         }
-        else
+        else if (msg.toLowerCase().substring(0, 3).equals("/me")){
+            JSON = JSON.replaceFirst(sender, "#" + name);
+            JSON = JSON.replaceFirst("/me", sender + " says ");
+            broadCast(JSON);
+            return "";
+        }else
             return JSON.replaceFirst(msg, "Command not found.");
     }
-
+    
+    private void broadCast(String JSON){
+        for (User user : users)
+            try {
+                user.session(name).getBasicRemote().sendObject(JSON);
+            } catch (IOException | EncodeException ex) {
+                Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    
     private String listRoomInstruction() {
         String rooms = "";
         for (Room room: ChatEndPoint.getChatRooms().values())
