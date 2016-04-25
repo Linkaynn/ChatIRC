@@ -16,6 +16,7 @@ public class Room {
     private String password;
     private ArrayList<User> users = new ArrayList<>();
     private ArrayList<User> admins = new ArrayList<>();
+    private ArrayList<User> bannedusers = new ArrayList<>();
     
     public Room(String name, User owner, boolean isPublic) {
         this.name = name;
@@ -116,6 +117,11 @@ public class Room {
             JSON = JSON.replaceFirst("/me", sender + " says ");
             broadCast(JSON);
             return "";
+        }else if (msg.toLowerCase().substring(0,4).equals("/ban")){
+            JSON = JSON.replaceFirst(msg, msg.substring(5)  + " kicked from the chat room");
+            broadCast(JSON);
+            banUser(JSON.substring(5).trim());
+            return "";
         }else
             return JSON.replaceFirst(msg, "Command not found.");
     }
@@ -137,7 +143,10 @@ public class Room {
     }
     
     public void joinedMessage(User user) throws IOException, EncodeException {
-
+        for (User u : users) {
+            if (u.username().equals(u.username())) return;
+        }
+        
         user.session(name).getBasicRemote().sendObject(
                 new JSONBuilder().put("message").as("Welcome to #" + name + ", " + user.username() + "!")
                         .put("sender").as("#" + name)
@@ -172,6 +181,15 @@ public class Room {
             removeUser(sender);
         } catch (IOException | EncodeException ex) {
             Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void banUser(String sender) {
+        for (User user : users) {
+            if (("@"+user.username()).equals(sender)){
+                bannedusers.add(user);
+                user.exit(name);
+            }
         }
     }
    
