@@ -14,7 +14,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import util.*;
 
-@ServerEndpoint(value = "/chat/{room}/{username}/{password}")
+@ServerEndpoint(value = "/chat/{room}/{username}/{password}/{isPrivate}")
 public class ChatEndPoint {
 
     private final Logger log = Logger.getLogger(getClass().getName());
@@ -22,7 +22,7 @@ public class ChatEndPoint {
     private static HashMap<String, Room> rooms = new HashMap<>();
 
     @OnOpen
-    public void open(final Session session, @PathParam("room") final String room, @PathParam("username") final String username, @PathParam("password") final String password) {
+    public void open(final Session session, @PathParam("room") final String room, @PathParam("username") final String username, @PathParam("password") final String password, @PathParam("isPrivate") final String isPrivate) {
         try {
             User user;
             if (rooms.containsKey(room)){

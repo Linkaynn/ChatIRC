@@ -14,7 +14,7 @@
         var isIgnored = false;
 
         function onMessageReceived(evt) {            
-            
+            isIgnored = false;
             var body = JSON.parse(evt.data).message;
             var sender = JSON.parse(evt.data).sender;
             var _class = sender === $nickName ? "me" : "other";
@@ -67,7 +67,7 @@
         }
 
         function connectToChatserver() {
-            wsocket = new WebSocket(serviceLocation + room + "/" + $nickName + "/" + password);
+            wsocket = new WebSocket(serviceLocation + room + "/" + $nickName + "/" + password + "/" + isPrivate);
             wsocket.onmessage = onMessageReceived;
         }
 
@@ -115,6 +115,9 @@
                     var win = window.open("http://localhost:8080/WebSocketChat/FrontController?username=" + $nickName.substring(1) + "&room=" + $message.val().split(" ")[1] + "&command=Anonymous", "_blank");
                     if(win) win.focus();
                     else alert('Please allow popups for this site');
+                }else if($message.val().indexOf("/notificateprivatechat") >= 0){
+                    $chatWindow.html($chatWindow.html() + "<p><span class=\"meMessage\">" + $nickName + ": Command not found.</span></p>");
+                    $message.val('');
                 } else if($message.val().indexOf("/ignore @") >= 0 && $.trim($message.val()).length > 9){
                     var user = $message.val().substring(9 , $message.val().length);
                     var contains = $nickName.substring(1) === user;
@@ -130,11 +133,10 @@
                     $message.val('').focus();
                 } else if($message.val().indexOf("/unignore @") >= 0 && $.trim($message.val()).length > 11){
                     var user = $message.val().substring(11 , $message.val().length);
-                    $usersIgnore.splice($.inArray(user, $usersIgnore), 1);
-                    //alert($usersIgnore.length);
-                    
+                    $.each($usersIgnore, function(index, u){
+                        if (user === u) $usersIgnore.splice(index, 1);
+                    });
                     $chatWindow.html($chatWindow.html() + "<p><span class=\"meMessage\">@" + user + " has been unignored. If you want to ignore again you must type /ignore @" + user + ".</span></p>");
-                    
                     $message.val('').focus();
                 } else
                     sendMessage(buildJSON($nickName, $message.val(), ""));
@@ -168,4 +170,8 @@
                 searchUsername(username);
                 if ($('#messageSearch').val() === "") $('#userContent p').show();
             });
+        }
+        
+        function sendNotification(a){
+            sendMessage(buildJSON($nickName, "/notificateprivatechat " + a.innerHTML + " Hi, " + a.innerHTML + "! " + $nickName + " has send you an invitation to private chat. <a target='_blank' href='%s'>¡Click here!</a>", ""));
         }

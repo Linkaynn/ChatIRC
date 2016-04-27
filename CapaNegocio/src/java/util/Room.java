@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.Singleton;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
@@ -18,6 +21,8 @@ public class Room {
     private ArrayList<User> admins = new ArrayList<>();
     private ArrayList<User> bannedusers = new ArrayList<>();
     
+    private PrivateRoomWrapper wrapper;
+    
     public Room(String name, User owner, boolean isPublic) {
         this.name = name;
         this.owner = owner;
@@ -25,6 +30,11 @@ public class Room {
         users.add(owner);
         admins.add(owner);
         SingletonBean.addUser();
+        try {
+            wrapper = (PrivateRoomWrapper) InitialContext.doLookup("java:global/ChatIRC/CapaNegocio/PrivateRoomWrapper");
+        } catch (NamingException ex) {
+            Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public Room(String name, User owner, boolean isPublic, String password) {
@@ -80,16 +90,16 @@ public class Room {
         return users.contains(username);
     }
     
-    public String users(){
+    public String users(String username){
         String result = "";
         for (String user : userList()) {
-            result += user + ",";
+            result += wrapper.wrap(user, username) + ",";
         }
         return result.substring(0, result.length() - 1);
     }
 
     public void processMesage(Session session, String JSON) throws IOException, EncodeException{
-        String msg = JSON.substring(JSON.indexOf(":") +2, JSON.indexOf(",") -1);
+        String msg = JSON.substring(JSON.indexOf(":") +2, JSON.indexOf("sender") -4);
         if (isInstruction(msg)){
             String message = processInstruction(msg, JSON);
             if (message.length() != 0)
@@ -122,6 +132,11 @@ public class Room {
             broadCast(JSON);
             banUser(JSON.substring(5).trim());
             return "";
+        }else if (msg.toLowerCase().substring(0,22).equals("/notificateprivatechat")){
+            String target = msg.split(" ")[1];
+            //TODO: BUSCAR EL TARGET EN TODAS LAS ROOMS Y SI SE ENCUENTRA ENVIARLE EL MENSAJE QUE VIENE IMPLICITO EN LA VARIABLE MSG
+            broadCast(JSON.replaceFirst(msg, target));
+            return "";
         }else
             return JSON.replaceFirst(msg, "Command not found.");
     }
@@ -143,7 +158,7 @@ public class Room {
     }
     
     public void joinedMessage(User user) throws IOException, EncodeException {
-        for (User u : users) {
+        for (User u : bannedusers) {
             if (u.username().equals(u.username())) return;
         }
         
@@ -153,7 +168,7 @@ public class Room {
                         .put("received").as("").build());
         
         user.session(name).getBasicRemote().sendObject(
-                new JSONBuilder().put("usernames").as(users()).build()
+                new JSONBuilder().put("usernames").as(users(user.username())).build()
         );
 
         updateUserList(user, "has joined.");
@@ -169,7 +184,7 @@ public class Room {
                                 .put("received").as("").build()
                 );
                 u.session(name).getBasicRemote().sendObject(
-                        new JSONBuilder().put("usernames").as(users()).build()
+                        new JSONBuilder().put("usernames").as(users(u.username())).build()
                 );
             }
         }

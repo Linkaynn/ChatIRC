@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="css/chatGeneral.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script>var password = <% out.print(request.getParameter("password")); %>   </script>
+    <script>var isPrivate = <% out.print(request.getParameter("isPrivate")); %>   </script>
     <script src="js/chat.js"></script>
 
 </head>
