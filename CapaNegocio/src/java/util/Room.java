@@ -51,7 +51,7 @@ public class Room {
     }
     
     public void addUser(User user){
-        if(!users.contains(user)){
+        if(!users.contains(user) && !bannedusers.contains(user)){
             users.add(user);
             SingletonBean.addUser();
         }
@@ -106,7 +106,6 @@ public class Room {
                 session.getBasicRemote().sendObject(message);
         }else
             broadCast(JSON);
-           
     }
 
     private boolean isInstruction(String message) {
@@ -128,10 +127,15 @@ public class Room {
             broadCast(JSON);
             return "";
         }else if (msg.toLowerCase().substring(0,4).equals("/ban")){
-            JSON = JSON.replaceFirst(msg, msg.substring(5)  + " kicked from the chat room");
-            broadCast(JSON);
-            banUser(JSON.substring(5).trim());
-            return "";
+            if (!name.equals("General")){ 
+                System.out.println("2");
+                banUser(msg.substring(5).trim());
+                JSON = JSON.replaceFirst(msg, msg.substring(5)  + " kicked from the chat room");
+                broadCast(JSON);
+                return "";
+            }else{
+                return "You have no power here";
+            }
         }else if (msg.toLowerCase().substring(0,22).equals("/notificateprivatechat")){
             String target = msg.split(" ")[1];
             //TODO: BUSCAR EL TARGET EN TODAS LAS ROOMS Y SI SE ENCUENTRA ENVIARLE EL MENSAJE QUE VIENE IMPLICITO EN LA VARIABLE MSG
@@ -201,9 +205,12 @@ public class Room {
 
     private void banUser(String sender) {
         for (User user : users) {
-            if (("@"+user.username()).equals(sender)){
+            if ((user.username()).equals(sender)){
+                System.out.println("YUPIIII");
                 bannedusers.add(user);
+                users.remove(user);
                 user.exit(name);
+                exitRoomInstruction(sender);
             }
         }
     }
