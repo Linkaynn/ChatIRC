@@ -173,5 +173,5 @@
         }
         
         function sendNotification(a){
-            sendMessage(buildJSON($nickName, "/notificateprivatechat " + a.innerHTML + " Hi, " + a.innerHTML + "! " + $nickName + " has send you an invitation to private chat. <a target='_blank' href='%s'>¡Click here!</a>", ""));
+            sendMessage(buildJSON($nickName, "/notificateprivatechat " + a.innerHTML + " Hi, " + a.innerHTML + "! Someone has send you an invitation to private chat. <a target='_blank' href='" + a.href + "'>Click here!</a>", ""));
         }

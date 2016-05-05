@@ -100,6 +100,9 @@ public class Room {
 
     public void processMesage(Session session, String JSON) throws IOException, EncodeException{
         String msg = JSON.substring(JSON.indexOf(":") +2, JSON.indexOf("sender") -4);
+        String sender = JSON.substring(JSON.indexOf("\"sender\":") + "\"sender\":".length() + 1, JSON.indexOf("\", \"received"));
+        
+        
         if (isInstruction(msg)){
             String message = processInstruction(msg, JSON);
             if (message.length() != 0)
@@ -138,8 +141,66 @@ public class Room {
             }
         }else if (msg.toLowerCase().substring(0,22).equals("/notificateprivatechat")){
             String target = msg.split(" ")[1];
-            //TODO: BUSCAR EL TARGET EN TODAS LAS ROOMS Y SI SE ENCUENTRA ENVIARLE EL MENSAJE QUE VIENE IMPLICITO EN LA VARIABLE MSG
-            broadCast(JSON.replaceFirst(msg, target));
+            String url = JSON.replace(msg, msg.substring(msg.indexOf("Hi,")).replace(sender.substring(1), target.substring(1)));
+            for (Room room : ChatEndPoint.getChatRooms().values()) {
+                for (User user : room.users) {
+                    if (user.username().equals(target))
+                        try {
+                            user.session(room.name).getBasicRemote().sendObject(url);
+                    } catch (IOException | EncodeException ex) {
+                        Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            return "";
+        }else if (msg.toLowerCase().substring(0,7).equals("/remove")){
+            for (User admin : admins) {
+                if (admin.username().equals(sender.substring(1))){
+                    try {
+                        removeUser(msg.split(" ")[1].substring(1));
+                        broadCast(JSON.replace(msg, msg.split(" ")[1].substring(1) + " has been removed."));
+                    } catch (IOException | EncodeException ex) {
+                        Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            return "";
+        }else if (msg.toLowerCase().substring(0,7).equals("/delete")){
+            if (sender.substring(1).equals(owner.username()))
+                for (User user : users){
+                  removeUser(user);
+                }
+          
+            return "";
+        }else if (msg.toLowerCase().substring(0,4).equals("/add")){
+            if (sender.substring(1).equals(owner.username()))
+                for (User user : users) 
+                    if (user.username().equals(sender.substring(1))){
+                        admins.add(user);
+                        broadCast(JSON.replace(msg, user.username() + " has been promoted."));
+                    }
+            return "";
+        }else if (msg.toLowerCase().substring(0,4).equals("/del")){
+            if (sender.substring(1).equals(owner.username()))
+                for (User admin : admins) 
+                    if (admin.username().equals(sender.substring(1))){
+                        admins.remove(admin);
+                        broadCast(JSON.replace(msg, admin.username() + " has been degraded."));
+                    }
+            return "";
+        }else if (msg.toLowerCase().substring(0,9).equals("/password")){
+            if (sender.substring(1).equals(owner.username()))
+                if (msg.split(" ")[1].equals(msg.split(" ")[2])){
+                    password = msg.split(" ")[1];
+                    return JSON.replace(msg, "The password has been changed");
+                }
+            return "";
+        }else if (msg.toLowerCase().substring(0,5).equals("/name")){
+            for (User admin : admins) 
+                if (admin.username().equals(sender.substring(1))){
+                    name = msg.split(" ")[1];
+                    broadCast(JSON.replace(msg, owner + " has change room's name, please reload."));
+                }
             return "";
         }else
             return JSON.replaceFirst(msg, "Command not found.");
@@ -163,7 +224,7 @@ public class Room {
     
     public void joinedMessage(User user) throws IOException, EncodeException {
         for (User u : bannedusers) {
-            if (u.username().equals(u.username())) return;
+            if (u.username().equals(user.username())) return;
         }
         
         user.session(name).getBasicRemote().sendObject(
