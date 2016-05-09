@@ -37,7 +37,7 @@ public class PrivateRoomWrapper {
                 ? 
                 "<a href='#'>" + user + "</a>" 
                 : 
-                String.format("<a target='_blank' onclick='sendNotification(this)' href='http://localhost:8080/WebSocketChat/FrontController?username=%s&room=%s&command=Anonymous&isPrivate=1'>%s</a>", hostUsername.substring(1, hostUsername.length()), generateHash(), user);
+                String.format("<a target='_blank' onclick='sendNotification(this)' href='http://localhost:8080/WebSocketChat/FrontController?username=%s&room=%s&password=adkakasdkdas&command=Anonymous&isPrivate=1&color=red'>%s</a>", hostUsername.substring(1, hostUsername.length()), generateHash(), user);
     }
 
    

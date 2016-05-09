@@ -1,3 +1,7 @@
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="util.ChatPreferences"%>
+<%@page import="javax.naming.InitialContext"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,8 +12,8 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/chatGeneral.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <script>var password = <% out.print(request.getParameter("password")); %>   </script>
-    <script>var isPrivate = <% out.print(request.getParameter("isPrivate")); %>   </script>
+    <script>var password = <% out.print(request.getParameter("password").length() == 0 ? null : request.getParameter("password") ); %> ;  </script>
+    <script>var isPrivate = <% out.print(request.getParameter("isPrivate")); %> ;  </script>
     <script src="js/chat.js"></script>
 
 </head>
@@ -63,6 +67,7 @@
               </p>              
             </div>
             <div class="modal-footer">
+                <input id="color" type="hidden" name="color" value="">
                 <input type="hidden" name="command" value="Anonymous">
                 <input type="submit" id="modal-submit" class="btn btn-default" value="Create">
             </div>
@@ -127,7 +132,6 @@
     </div>
     <br>
 </div>
-
 
 <script>
     
@@ -196,13 +200,14 @@
         $('#modal-submit').val(submit);
     }
        
- 
+changeTheme("<% out.print(request.getParameter("color"));  %>");
 function changeTheme(nameColor){
     if(colors[nameColor]){
         $('.menuOptions').css({"background-color":colors[nameColor].menu});
         $('body').css({"background-color":colors[nameColor].body});
         $('h1').css({"text-shadow":colors[nameColor].title});
         $('#myModalAjustes').modal('hide');
+        $('#color').val(nameColor);
     }
 }
 </script>

@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Schedule;
-import javax.ejb.Singleton;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
+//TODO GET PREFERENCES FROM USER AND WHEN CLICKING ANOTHER COLOR SET IT TO PREFERENCES, statefull chatpreferences stores
+//the color for each user, check the timer sometimes disconnects twices same user, when we create a new room we can't send new messages
+//
 public class Room {
     private String name;
     private User owner;
@@ -30,7 +31,7 @@ public class Room {
         this.isPublic = isPublic;
         users.add(owner);
         admins.add(owner);
-        SingletonBean.addUser();
+        if ("General".equals(this.name)) SingletonBean.addUser();
         try {
             wrapper = (PrivateRoomWrapper) InitialContext.doLookup("java:global/ChatIRC/CapaNegocio/PrivateRoomWrapper");
         } catch (NamingException ex) {
@@ -54,7 +55,7 @@ public class Room {
     public void addUser(User user){
         if(!users.contains(user) && !bannedusers.contains(user)){
             users.add(user);
-            SingletonBean.addUser();
+            if ("General".equals(name)) SingletonBean.addUser();
         }
     }
     
@@ -67,7 +68,7 @@ public class Room {
             if(user.username().equals(userName)){ 
                 users.remove(user);
                 updateUserList(user, "has left.");
-                SingletonBean.removeUser();
+                if ("General".equals(name) && SingletonBean.userCount > 0) SingletonBean.removeUser();
                 return;
             }
         }
@@ -108,8 +109,15 @@ public class Room {
             String message = processInstruction(msg, JSON);
             if (message.length() != 0)
                 session.getBasicRemote().sendObject(message);
-        }else
+        }else{
             broadCast(JSON.replace(msg, ChatFilter.filter(msg)));
+            for (User user : users) {
+                System.out.println("USERNAMe=" + user.username() + " SENDEr=" + sender);
+                if (user.username().equals(sender)){
+                    user.setTyped(true);
+                }
+            }
+        }
     }
 
     private boolean isInstruction(String message) {
@@ -203,6 +211,11 @@ public class Room {
                     broadCast(JSON.replace(msg, owner + " has change room's name, please reload."));
                 }
             return "";
+        }else if (msg.toLowerCase().substring(0,6).equals("/color")){
+            for (User user : users) 
+                if (user.username().equals(sender.substring(1)))
+                    user.changeColor(msg.substring(6));
+            return "";
         }else
             return JSON.replaceFirst(msg, "Command not found.");
     }
@@ -214,6 +227,7 @@ public class Room {
             } catch (IOException | EncodeException ex) {
                 Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
             }
+        
     }
     
     private String listRoomInstruction() {
@@ -294,8 +308,9 @@ public class Room {
                                     .put("message").as("Has sido desconectado de la sala " + name + " por inactividad.")
                                     .put("received").as("").build());
                     user.exit(name);
+                    //user.session(name).getBasicRemote().sendObject("http://localhost:8080/WebSocketChat/FrontController?username="+user.username()+"&command=Logout");
                 } catch (IOException | EncodeException ex) {
-                    Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
+                    //Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
                     break;
                 }
             }

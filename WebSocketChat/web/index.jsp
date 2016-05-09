@@ -27,6 +27,8 @@
                 <input type="text" placeholder="Nick" name="username" id="nickGuest">
                 <br>
                 <input type="hidden" name="room" value="General">
+                <input type="hidden" name="color" value="">
+                <input type="hidden" name="password" value="">
                 <input type="hidden" name="command" value="Anonymous">
                 <input class="btn btn-success" type="submit" value="Enter">
             </form>

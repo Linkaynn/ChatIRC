@@ -1,9 +1,7 @@
 package util;
 
-import chat.ChatEndPoint;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 
 @Singleton
@@ -32,9 +30,4 @@ public class SingletonBean {
     public int getUsers(){
         return userCount;
     }
-    
-   
- 
-   
-    
 }
