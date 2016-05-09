@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -108,7 +109,7 @@ public class Room {
             if (message.length() != 0)
                 session.getBasicRemote().sendObject(message);
         }else
-            broadCast(JSON);
+            broadCast(JSON.replace(msg, ChatFilter.filter(msg)));
     }
 
     private boolean isInstruction(String message) {
@@ -267,11 +268,36 @@ public class Room {
     private void banUser(String sender) {
         for (User user : users) {
             if ((user.username()).equals(sender)){
-                System.out.println("YUPIIII");
                 bannedusers.add(user);
                 users.remove(user);
                 user.exit(name);
                 exitRoomInstruction(sender);
+            }
+        }
+    }
+    
+    public String name(){
+        return name;
+    }
+    
+    
+    public void timeOut(){
+        for (User user : users) {
+            if(user.isTyped()) user.setTyped(false);
+            else{
+                try {
+                    exitRoomInstruction(user.username());
+                    users.remove(user);
+                    user.session(name).getBasicRemote().sendObject(
+                            new JSONBuilder()
+                                    .put("sender").as(user.username())
+                                    .put("message").as("Has sido desconectado de la sala " + name + " por inactividad.")
+                                    .put("received").as("").build());
+                    user.exit(name);
+                } catch (IOException | EncodeException ex) {
+                    Logger.getLogger(Room.class.getName()).log(Level.SEVERE, null, ex);
+                    break;
+                }
             }
         }
     }

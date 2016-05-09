@@ -30,6 +30,7 @@ public class ChatEndPoint {
                   if (users.containsKey(username)){
                     user = users.get(username);
                     user.addSession(room, session);
+                    user.setTyped(true);
                   }else
                     user = new User(username, room, session);
                   users.put(username, user);
@@ -40,6 +41,7 @@ public class ChatEndPoint {
                 if (users.containsKey(username)){
                     user = users.get(username);
                     user.addSession(room, session);
+                    user.setTyped(true);
                   }else
                     user = new User(username, room, session);
                 users.put(username, user);

@@ -9,6 +9,7 @@ public class User {
     private String username;
     private String lastRoom;
     private HashMap<String, Session> sessions = new HashMap<>();
+    private boolean typed = false;
 
     public User(String username, String room, Session session) {
         this.username = username;
@@ -52,6 +53,16 @@ public class User {
     public HashMap<String, Session> sessions() {
         return sessions;
     }
+
+    public boolean isTyped() {
+        return typed;
+    }
+
+    public void setTyped(boolean typed) {
+        this.typed = typed;
+    }
+    
+    
     
     
     

@@ -1,5 +1,6 @@
 package util;
 
+import chat.ChatEndPoint;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Schedule;
@@ -32,14 +33,8 @@ public class SingletonBean {
         return userCount;
     }
     
-    @Schedule(second = "*", minute = "*", hour="*")
-    public void scheduleTimer() {
-        sendMessage("HOLA");
-    }
-
-    public void sendMessage(String hola) {
-        
-    }
+   
+ 
    
     
 }
